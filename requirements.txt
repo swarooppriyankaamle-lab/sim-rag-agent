@@ -1,0 +1,8 @@
+anthropic>=0.40
+numpy>=1.24
+scikit-learn>=1.3
+sentence-transformers>=2.7
+pypdf>=4.0
+# Optional, for RAG_PROVIDER=local (open-source model, no API key):
+# llama-cpp-python>=0.3
+# huggingface_hub>=0.24
