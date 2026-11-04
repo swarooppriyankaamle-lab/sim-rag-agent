@@ -1,6 +1,6 @@
 # Agentic RAG for Simulation Troubleshooting, with an Evaluation Harness
 
-A Claude-based agent answers simulation-engineering questions (contact convergence, mesh convergence, explicit dynamics checks, units and plasticity input) from a document collection. It decides when and what to search, reads surrounding context, uses a calculator for arithmetic, and submits a cited answer, or declines when the documents don't cover the question.
+A document-grounded RAG assistant with an evaluation harness. It supports Anthropic Claude and a local open-source model backend answers simulation-engineering questions (contact convergence, mesh convergence, explicit dynamics checks, units and plasticity input) from a document collection. It decides when and what to search, reads surrounding context, uses a calculator for arithmetic, and submits a cited answer, or declines when the documents don't cover the question.
 
 The main point of the project is the **evaluation harness**: a ground-truth question set and metrics that compare a basic RAG baseline with the agentic version.
 
