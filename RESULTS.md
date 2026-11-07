@@ -45,7 +45,29 @@ The LLM judge agreed with the hand review on 22 of 24 answers (92%). Both disagr
 | q07 | basic | partial | incorrect | Judge said the true stress was correct; it was 325 MPa, not 315 MPa |
 | q03 | agentic | correct | partial | Missed the main fix: removing rigid body motion before contact closes |
 
-Reproduce with `python agreement.py results/basic_20261103_230801.csv` (and the agentic file).
+Raw agreement flatters the judge here, because most answers are correct and two raters who both say "correct" most of the time agree a lot by chance. Cohen's kappa corrects for that:
+
+| Rows | n | Raw agreement | Cohen's kappa | Weighted kappa (linear) | Kappa, correct vs not |
+| --- | --- | --- | --- | --- | --- |
+| Basic, all | 12 | 92% | 0.71 | 0.77 | 1.00 |
+| Agentic, all | 12 | 92% | 0.62 | 0.62 | 0.62 |
+| Both, all | 24 | 92% | 0.67 | 0.71 | 0.83 |
+| Both, judge-graded only | 18 | 89% | 0.66 | 0.70 | 0.82 |
+
+Confusion matrix, both modes (rows = hand review, columns = LLM judge):
+
+| | correct | partial | incorrect |
+| --- | --- | --- | --- |
+| correct | 20 | 0 | 0 |
+| partial | 1 | 2 | 0 |
+| incorrect | 0 | 1 | 0 |
+
+- **92% agreement becomes kappa 0.67: substantial, not near-perfect** (Landis and Koch: 0.61 to 0.80). Chance agreement alone is 74% with these label counts.
+- "Judge-graded only" drops the 6 unanswerable questions, which `evaluate.py` grades by rule, not with the judge. Kappa barely moves (0.66), so the rule-graded rows weren't inflating it.
+- Both misses are one step too generous, and the judge never called anything incorrect. That is a bias, not noise: a judge that leans lenient will overstate accuracy, which is what happened here (92% and 96% by judge vs 88% and 92% by hand).
+- With 24 labels and only one "incorrect", the kappa estimate is rough. A rubric that asks the judge to check each key number against the reference, and 50+ labelled answers, would test it properly.
+
+Reproduce with `python agreement.py results/basic_20261103_230801.csv results/agentic_20261103_230801.csv`.
 
 ## Limitations and next steps
 

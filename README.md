@@ -44,7 +44,7 @@ python retrieval_eval.py                               # retrieval only, no API 
 | `tools.py` | Safe calculator the agent uses for arithmetic |
 | `grader.py` | LLM-as-judge: correct / partial / incorrect against an expert reference |
 | `evaluate.py` | Runs the question set, scores both pipelines, saves CSV, traces and a summary table |
-| `agreement.py` | Measures how often the LLM grader agrees with your own labels |
+| `agreement.py` | Measures how far the LLM grader agrees with your own labels (raw agreement and Cohen's kappa) |
 | `retrieval_eval.py` | Retrieval-only benchmark across embedding methods and chunk sizes (no model needed) |
 | `llm.py`, `local_llm.py` | Backend switch: Claude via the Anthropic API, or a local open-source model |
 | `eval/questions.jsonl` | Ground-truth questions, including unanswerable ones |
@@ -68,8 +68,10 @@ Agent tools: `search_docs`, `read_chunk`, `calculator`, `submit_answer` (structu
 An LLM grader is itself a model to validate. Open a results CSV, fill the `human_label` column for at least 20 rows with your own judgment, then:
 
 ```bash
-python agreement.py results/agentic_<timestamp>.csv
+python agreement.py results/basic_<timestamp>.csv results/agentic_<timestamp>.csv
 ```
+
+It prints raw agreement, Cohen's kappa (unweighted, linearly weighted on correct > partial > incorrect, and correct vs not), a confusion matrix and every disagreement, per file and pooled. Kappa matters because raw agreement is inflated when most answers are correct.
 
 ## Make it yours
 
@@ -91,4 +93,4 @@ First run on Qwen2.5-3B-Instruct (open source, 4-bit, CPU only), 12 questions. F
 | Tokens per answer | 867 | 2,861 |
 | Latency per answer | 43 s | 107 s |
 
-The LLM judge agreed with hand review on 22 of 24 answers; both misses were too generous.
+The LLM judge agreed with hand review on 22 of 24 answers (Cohen's kappa 0.67, substantial); both misses were too generous.
